@@ -1,0 +1,378 @@
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+class Node
+{
+public:
+    int data;
+    Node *next;
+    Node *prev;
+
+    // Constructor 1
+    Node(int data1, Node *next1, Node *prev1)
+    {
+        data = data1;
+        next = next1;
+        prev = prev1;
+    }
+
+    // Constructor 2 for first node
+    Node(int data1)
+    {
+        data = data1;
+        next = nullptr;
+        prev = nullptr;
+    }
+};
+
+// convert array to linked list
+Node *convertArr2DLL(vector<int> arr)
+{
+    int n = arr.size();
+    Node *head = new Node(arr[0]);
+    Node *prev = head;   // pointer 
+
+    for (int i = 1; i < n; i++)
+    {
+        Node *temp = new Node(arr[i]);  // or  new Node(arr[i], nullptr, prev);
+        prev->next = temp;
+        temp->prev = prev;
+        prev = temp;
+    }
+    return head;
+}
+
+int lengthOFLL(Node *head)
+{
+    int cnt = 0;
+    Node *temp = head;
+    while (temp != NULL)
+    {
+
+        temp = temp->next;
+        cnt++;
+    }
+    return cnt;
+}
+
+void print(Node *head)
+{
+    Node *temp = head;
+    while (temp!= NULL)
+    {
+        cout << temp->data << " ";
+        temp = temp->next;
+    }
+
+    cout << endl;
+}
+
+bool checkIfPresent(Node *head, int val)
+{
+
+    Node *temp = head;
+    while (temp != NULL)
+    {
+        if (temp->data == val)
+            return true;
+        temp = temp->next;
+    }
+    return false;
+}
+
+
+
+// delete the head of ll
+Node* removesHead(Node* head){
+
+    // if list is empty
+    if(head==NULL) return NULL;
+
+    Node* temp=head;
+    head=head->next;
+    head->prev=NULL;
+    delete temp;
+    return head;
+
+}
+
+// delete the tail of ll
+Node* removesTail(Node* head){
+
+
+    // if list is empty
+    if (head == NULL) return NULL;
+
+    // If there's only one node in the list
+    if (head->next == NULL) {
+        delete head;
+        return NULL;
+    }
+
+    Node* prev=NULL;
+    Node* curr=head;
+    while(curr->next!=NULL){
+        prev=curr;
+        curr=curr->next;    
+
+    }
+     prev->next=NULL;
+     curr->prev=NULL;
+    delete curr;
+    return head;
+
+}
+
+
+
+
+// delete the kth node from the doubly linked list
+Node* deleteK(Node* head,int k){
+
+    // if list is empty
+    if (head == NULL) return NULL;
+
+    //if k is first 
+    if(k==1){
+    Node* temp=head;
+    head=head->next;
+    head->prev=NULL;
+
+    delete temp;
+    return head;
+
+    }
+
+    //if k is any number another than 1
+
+    Node* prev=NULL;
+    Node* curr=head;
+    int cnt=1;
+    while(curr!=NULL){
+       
+        if(cnt==k){
+            prev->next=curr->next;
+            delete(curr);
+            break;
+
+
+        }
+        prev=curr;
+        curr=curr->next;
+         cnt++;
+    }
+    return head;
+
+}
+
+
+
+
+// delete the node with particular value from the doubly linked list
+Node* deleteval(Node* head,int val){
+
+    // if list is empty
+    if (head == NULL) return NULL;
+
+    //if val is head data
+    if(head->data==val){
+         Node* temp=head;
+    head=head->next;
+    head->prev=NULL;
+    delete temp;
+    return head;
+
+    }
+
+    //if val is any data  another than head
+
+    Node* prev=NULL;
+    Node* curr=head;
+    int cnt=1;
+    while(curr!=NULL){
+       
+        if(curr->data==val){
+            prev->next=curr->next;
+            curr->next->prev=prev;
+            delete(curr);
+            break;
+
+
+        }
+        prev=curr;
+        curr=curr->next;
+        
+    }
+    return head;
+
+}
+
+
+
+// insert a node at head
+
+Node *insertatHead(Node *head, int val)
+{
+
+    // create a new node
+    Node *temp = new Node(val);
+
+    if (head == NULL)
+        return temp;
+    else{
+        temp->next = head;
+        head->prev=temp;
+        head = temp;
+        return head;
+    }
+}
+
+// insert a node at tail
+Node *insertatTail(Node *head, int val)
+{
+
+    // create a new node
+     Node *newNode = new Node(val);
+
+    if (head == NULL)
+        return newNode;
+
+    Node *temp = head;
+    while (temp->next != NULL)
+    {
+        temp = temp->next;
+    }
+    
+    temp->next = newNode;
+    newNode->prev=temp;
+    return head;
+}
+
+// even if ll is empty we can insert at head and tail by adding the node
+// but not in kth position (it shoul be k=1)
+
+
+
+// insert a node at k position
+Node* insertatpos(Node* head,int val, int k){
+    if (head == NULL)
+    {
+        if (k == 1)
+        {
+            return new Node(val);
+        }
+        else{
+            return NULL;
+        }
+    }
+
+    if (k == 1)
+    {
+        Node *temp = new Node(val);
+        temp->next = head;
+        head->prev=NULL;    
+        head = temp;
+        return head;
+    }
+    
+
+    int cnt = 1;
+    Node *temp = head;
+    while (temp->next != NULL)
+    {
+        temp = temp->next;
+        cnt++;
+        if(cnt==k-1){
+            Node *newNode = new Node(val);
+            newNode->next=temp->next;
+            newNode->prev=temp;
+            temp->next=newNode;
+            newNode->next->prev=newNode;
+
+        }
+        
+    }
+   
+    return head;
+}
+
+
+Node* insertbeforeVal(Node* head,int el, int val){
+    if (head == NULL)
+    {
+       return NULL;
+    }
+
+    if ( val== head->data)
+    {
+        Node *temp = new Node(el);
+        temp->next = head;
+        head->prev=temp;
+        head = temp;
+        return head;
+    }
+
+    Node *temp = head;
+    while (temp->next != NULL)
+    {
+        if (temp->next->data == val)
+        {
+            Node *newNode = new Node(el);
+            newNode->next = temp->next;
+            newNode->prev=temp;
+            temp->next = newNode;
+            newNode->next->prev=newNode;
+            break;
+        }
+        temp = temp->next;
+    }
+
+    return head;
+}
+
+
+
+
+int main()
+{
+    vector<int> arr = {12, 5, 8, 7, 4, 9, 16};
+
+
+    Node *head = convertArr2DLL(arr);
+    print(head);
+
+    // cout << lengthOFLL(head) << endl;
+
+  
+    //cout<<checkIfPresent(head,0)<<endl;
+
+    //    head = removesHead(head);
+    //    print(head);
+    
+
+    //    head = removesTail(head);
+    //    print(head);
+
+    // head = deleteK(head,4);
+    // print(head);
+
+    // head = deleteval(head,9);
+    // print(head);
+
+    //  head = insertatHead(head,17);
+    //  print(head);
+    
+
+    // head= insertatTail(head,45);
+    // print(head);
+
+    //   head = insertatpos(head,17,3);
+    //   print(head);
+   
+
+    head = insertbeforeVal(head,17,8);
+    print(head);
+    
+}
