@@ -1,0 +1,63 @@
+class Solution {
+public:
+    ListNode* deleteValue(ListNode* head, int value) {
+        // Dummy node to handle head deletion
+        ListNode* dummy = new ListNode(-1);
+        dummy->next = head;
+
+        ListNode* prev = dummy;
+        ListNode* curr = head;
+
+        while (curr) {
+            if (curr->val == value) {
+                prev->next = curr->next;
+            } else {
+                prev = curr;
+            }
+            curr = curr->next;
+        }
+
+        return dummy->next;
+    }
+
+    ListNode* modifiedList(vector<int>& nums, ListNode* head) {
+        for (int num : nums) {
+            head = deleteValue(head, num);
+        }
+        return head;
+    }
+};
+
+
+
+
+
+
+
+class Solution {
+public:
+    ListNode* modifiedList(vector<int>& nums, ListNode* head) {
+        unordered_set<int> mpp(nums.begin(), nums.end());
+
+        // Create a dummy node before head
+        ListNode* dummy = new ListNode(-1);
+        dummy->next = head;
+
+        ListNode* prev = dummy;
+        ListNode* curr = head;
+
+        while (curr) {
+            if (mpp.count(curr->val)) {
+                // If current node value exists in nums, remove it
+                prev->next = curr->next;
+            } else {
+                // Otherwise, move prev forward
+                prev = curr;
+            }
+            curr = curr->next;
+        }
+
+        // Return the new head (after dummy)
+        return dummy->next;
+    }
+};
